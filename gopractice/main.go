@@ -39,7 +39,7 @@ func main() {
 	fmt.Println("Done, extracted", len(jobs))
 }
 
-//wrtieJobs is function
+//wrtieJobs is writing extractedJob into csv
 func writeJobs(jobs []extractedJob) {
 	file, err := os.Create("jobs.csv")
 	checkErr(err)
@@ -48,7 +48,7 @@ func writeJobs(jobs []extractedJob) {
 	file.Write(utf8bom)
 	w := csv.NewWriter(file)
 	defer w.Flush()
-	headers := []string{"ID", "Title", "Location", "Salary", "Summary"}
+	headers := []string{"LINK", "Title", "Location", "Salary", "Summary"}
 
 	wErr := w.Write(headers)
 	checkErr(wErr)
@@ -57,53 +57,6 @@ func writeJobs(jobs []extractedJob) {
 		jobSlice := []string{"https://kr.indeed.com/viewjob?jk=" + job.id, job.title, job.location, job.salary, job.summary}
 		jwErr := w.Write(jobSlice)
 		checkErr(jwErr)
-	}
-}
-
-//검색어 입력 함수
-func getQuery() {
-	var query string
-	fmt.Printf("typing query :")
-	fmt.Scanln(&query)
-	baseURLresult = baseURLhead + query
-}
-
-//getPage extract jobs from page
-func getPage(page int) []extractedJob {
-	var jobs []extractedJob
-	pageURL := baseURL + "&start=" + strconv.Itoa(page*50)
-	fmt.Println("Requesting", pageURL)
-	res, err := http.Get(pageURL)
-	checkErr(err)
-	checkCode(res)
-
-	//defer res.Body.Close()
-
-	doc, err := goquery.NewDocumentFromReader(res.Body)
-	checkErr(err)
-
-	searchCards := doc.Find(".jobsearch-SerpJobCard")
-	searchCards.Each(func(i int, card *goquery.Selection) {
-		job := extractJob(card)
-		jobs = append(jobs, job)
-	})
-	res.Body.Close()
-	return jobs
-}
-
-//extractJob is extract job data from cards
-func extractJob(card *goquery.Selection) extractedJob {
-	id, _ := card.Attr("data-jk")
-	title := clearString(card.Find(".title>a").Text())
-	location := clearString(card.Find(".sjcl").Text())
-	salary := clearString(card.Find(".salaryText").Text())
-	summary := clearString(card.Find(".summary").Text())
-	return extractedJob{
-		id:       id,
-		title:    title,
-		location: location,
-		salary:   salary,
-		summary:  summary,
 	}
 }
 
@@ -125,6 +78,57 @@ func getPages() int {
 		},
 	)
 	return pages
+}
+
+//getPage extract jobs from url
+func getPage(page int) []extractedJob {
+	c := make(chan extractedJob)
+	var jobs []extractedJob
+	pageURL := baseURL + "&start=" + strconv.Itoa(page*50)
+	fmt.Println("Requesting", pageURL)
+	res, err := http.Get(pageURL)
+	checkErr(err)
+	checkCode(res)
+
+	defer res.Body.Close()
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	checkErr(err)
+
+	searchCards := doc.Find(".jobsearch-SerpJobCard")
+	searchCards.Each(func(i int, card *goquery.Selection) {
+		go extractJob(card, c)
+	})
+
+	for i := 0; i < searchCards.Length(); i++ {
+		job := <-c
+		jobs = append(jobs, job)
+	}
+	return jobs
+}
+
+//extractJob is extract job data from cards
+func extractJob(card *goquery.Selection, c chan<- extractedJob) {
+	id, _ := card.Attr("data-jk")
+	title := clearString(card.Find(".title>a").Text())
+	location := clearString(card.Find(".sjcl").Text())
+	salary := clearString(card.Find(".salaryText").Text())
+	summary := clearString(card.Find(".summary").Text())
+	c <- extractedJob{
+		id:       id,
+		title:    title,
+		location: location,
+		salary:   salary,
+		summary:  summary,
+	}
+}
+
+//검색어 입력 함수
+func getQuery() {
+	var query string
+	fmt.Printf("typing query :")
+	fmt.Scanln(&query)
+	baseURLresult = baseURLhead + query
 }
 
 //clearString is clearing the strings (clean & seperate)
