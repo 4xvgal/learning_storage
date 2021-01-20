@@ -80,7 +80,7 @@ func getPages() int {
 	return pages
 }
 
-//getPage extract jobs from url
+//getPage extract jobs from each card
 func getPage(page int) []extractedJob {
 	c := make(chan extractedJob)
 	var jobs []extractedJob
@@ -99,7 +99,7 @@ func getPage(page int) []extractedJob {
 	searchCards.Each(func(i int, card *goquery.Selection) {
 		go extractJob(card, c)
 	})
-
+	//fmt.Println("length", searchCards.Length())
 	for i := 0; i < searchCards.Length(); i++ {
 		job := <-c
 		jobs = append(jobs, job)
