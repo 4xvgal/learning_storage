@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -33,7 +35,27 @@ func main() {
 		extractJobs := getPage(i)
 		jobs = append(jobs, extractJobs...)
 	}
-	fmt.Println(jobs)
+	writeJobs(jobs)
+	fmt.Println("Done, extracted", len(jobs))
+}
+
+//wrtieJobs is function
+func writeJobs(jobs []extractedJob) {
+	file, err := os.Create("jobs.csv")
+	checkErr(err)
+
+	w := csv.NewWriter(file)
+	defer w.Flush()
+	headers := []string{"ID", "Title", "Location", "Salary", "Summary"}
+
+	wErr := w.Write(headers)
+	checkErr(wErr)
+
+	for _, job := range jobs {
+		jobSlice := []string{"https://kr.indeed.com/viewjob?jk=" + job.id, job.title, job.location, job.salary, job.summary}
+		jwErr := w.Write(jobSlice)
+		checkErr(jwErr)
+	}
 }
 
 //검색어 입력 함수
@@ -53,7 +75,7 @@ func getPage(page int) []extractedJob {
 	checkErr(err)
 	checkCode(res)
 
-	defer res.Body.Close()
+	//defer res.Body.Close()
 
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	checkErr(err)
@@ -63,6 +85,7 @@ func getPage(page int) []extractedJob {
 		job := extractJob(card)
 		jobs = append(jobs, job)
 	})
+	res.Body.Close()
 	return jobs
 }
 
