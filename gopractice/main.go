@@ -27,37 +27,22 @@ type extractedJob struct {
 
 func main() {
 	var jobs []extractedJob
+	c := make(chan []extractedJob)
+
 	getQuery()
 	baseURL = baseURLresult
 	//totalPages 총 페이지 수
 	totalPages := getPages()
+
 	for i := 0; i < totalPages; i++ {
-		extractJobs := getPage(i)
-		jobs = append(jobs, extractJobs...)
+		go getPage(i, c)
+	}
+	for i := 0; i < totalPages; i++ {
+		extractedJobs := <-c
+		jobs = append(jobs, extractedJobs...)
 	}
 	writeJobs(jobs)
 	fmt.Println("Done, extracted", len(jobs))
-}
-
-//wrtieJobs is writing extractedJob into csv
-func writeJobs(jobs []extractedJob) {
-	file, err := os.Create("jobs.csv")
-	checkErr(err)
-
-	utf8bom := []byte{0xEF, 0xBB, 0xBF}
-	file.Write(utf8bom)
-	w := csv.NewWriter(file)
-	defer w.Flush()
-	headers := []string{"LINK", "Title", "Location", "Salary", "Summary"}
-
-	wErr := w.Write(headers)
-	checkErr(wErr)
-
-	for _, job := range jobs {
-		jobSlice := []string{"https://kr.indeed.com/viewjob?jk=" + job.id, job.title, job.location, job.salary, job.summary}
-		jwErr := w.Write(jobSlice)
-		checkErr(jwErr)
-	}
 }
 
 //getPages is return how many pages in the URL
@@ -81,7 +66,7 @@ func getPages() int {
 }
 
 //getPage extract jobs from each card
-func getPage(page int) []extractedJob {
+func getPage(page int, mainC chan<- []extractedJob) {
 	c := make(chan extractedJob)
 	var jobs []extractedJob
 	pageURL := baseURL + "&start=" + strconv.Itoa(page*50)
@@ -104,7 +89,7 @@ func getPage(page int) []extractedJob {
 		job := <-c
 		jobs = append(jobs, job)
 	}
-	return jobs
+	mainC <- jobs
 }
 
 //extractJob is extract job data from cards
@@ -120,6 +105,27 @@ func extractJob(card *goquery.Selection, c chan<- extractedJob) {
 		location: location,
 		salary:   salary,
 		summary:  summary,
+	}
+}
+
+//wrtieJobs is writing extractedJob into csv
+func writeJobs(jobs []extractedJob) {
+	file, err := os.Create("jobs.csv")
+	checkErr(err)
+
+	utf8bom := []byte{0xEF, 0xBB, 0xBF}
+	file.Write(utf8bom)
+	w := csv.NewWriter(file)
+	defer w.Flush()
+	headers := []string{"LINK", "Title", "Location", "Salary", "Summary"}
+
+	wErr := w.Write(headers)
+	checkErr(wErr)
+
+	for _, job := range jobs {
+		jobSlice := []string{"https://kr.indeed.com/viewjob?jk=" + job.id, job.title, job.location, job.salary, job.summary}
+		jwErr := w.Write(jobSlice)
+		checkErr(jwErr)
 	}
 }
 
