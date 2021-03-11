@@ -1,15 +1,22 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
 	"github.com/MrWaggel/gosteamconv"
 )
 
+// ErrRange indicates that a value is out of range for the target type.
+var ErrRange = errors.New("value out of range")
+
 func main() {
 	rankInt := 13 //13 = Master Guardian Elite
-	fmt.Println(returnRankString(rankInt))
+	rankResult, err := ReturnRankString(rankInt)
+	checkErr(err)
+	fmt.Println(rankResult)
+
 }
 
 //func stringToInt
@@ -26,10 +33,8 @@ func checkErr(err error) {
 	}
 }
 
-//retrunRankString is return rank info to string
-func returnRankString(rankInt int) (string, error) {
-	var err error
-	var returnRankString string
+//ReturnRankString is return rank info to string
+func ReturnRankString(rankInt int) (string, error) {
 	rankMap := map[int]string{
 		1:  "Silver 1",
 		2:  "Silver 2",
@@ -50,7 +55,10 @@ func returnRankString(rankInt int) (string, error) {
 		17: "Supreme Master First Class",
 		18: "The Global Elite",
 	}
-	returnRankString = rankMap[rankInt]
-
-	return returnRankString, err
+	if rankInt <= 0 || rankInt >= 18 {
+		return "0", ErrRange
+	}
+	return rankMap[rankInt], nil
+	//returnRankString = rankMap[rankInt]
+	//return returnRankString, err
 }
