@@ -1,0 +1,14 @@
+map     : de_mirage
+players : 10 humans, 0 bots (10/10 max) (not hibernating)
+
+# userid name uniqueid connected ping loss state rate
+#  3 2 "Aqua" STEAM_1:0:168838158 00:11 97 78 active 160000
+#  6 5 "Gura" STEAM_1:0:92234131 00:11 96 56 spawning 786432
+#  7 6 "JM" STEAM_1:0:61231380 00:11 67 0 active 500000
+#  8 7 "Error 404" STEAM_1:0:510932539 00:11 119 83 active 256000
+#  9 8 "Babay" STEAM_1:1:421150820 00:11 79 56 spawning 786432
+# 10 9 "NOneTap" STEAM_1:1:60020448 00:11 105 56 spawning 786432
+# 11 10 "Charles Leclerc" STEAM_1:0:61709220 00:11 69 0 active 196608
+# 12 11 "Piu" STEAM_1:0:83793012 00:11 309 78 active 786432
+# 13 12 "Tama" STEAM_1:1:109338922 00:11 95 56 spawning 786432
+# 14 13 "Lil Ze" STEAM_1:1:226357720 00:11 77 56 spawning 196608
