@@ -1,14 +1,20 @@
+Connected to =[A:1:3538980864:16733]:0
+hostname: Valve CS:GO Japan Server (srcds105.145.35)
+version : 1.37.8.3 secure
+os      :  Linux
+type    :  official dedicated
 map     : de_mirage
 players : 10 humans, 0 bots (10/10 max) (not hibernating)
 
 # userid name uniqueid connected ping loss state rate
-#  3 2 "Aqua" STEAM_1:0:168838158 00:11 97 78 active 160000
-#  6 5 "Gura" STEAM_1:0:92234131 00:11 96 56 spawning 786432
-#  7 6 "JM" STEAM_1:0:61231380 00:11 67 0 active 500000
-#  8 7 "Error 404" STEAM_1:0:510932539 00:11 119 83 active 256000
-#  9 8 "Babay" STEAM_1:1:421150820 00:11 79 56 spawning 786432
-# 10 9 "NOneTap" STEAM_1:1:60020448 00:11 105 56 spawning 786432
-# 11 10 "Charles Leclerc" STEAM_1:0:61709220 00:11 69 0 active 196608
-# 12 11 "Piu" STEAM_1:0:83793012 00:11 309 78 active 786432
-# 13 12 "Tama" STEAM_1:1:109338922 00:11 95 56 spawning 786432
-# 14 13 "Lil Ze" STEAM_1:1:226357720 00:11 77 56 spawning 196608
+#  3 2 "💓⎛⎝kǎ☠le⎠⎞☄💖" STEAM_1:1:8178797 00:25 35 0 active 786432
+#  6 5 "ZimoVv" STEAM_1:1:114224538 00:25 62 0 active 196608
+#  7 6 "♔Sy♔" STEAM_1:0:467147532 00:25 63 0 active 196608
+#  8 7 "JM" STEAM_1:0:61231380 00:25 64 0 active 500000
+#  9 8 "당근이쥐!" STEAM_1:1:49429540 00:25 65 0 active 400000
+# 10 9 "𝐓𝐚𝐲𝐦𝟏𝐧𝐠" STEAM_1:0:436588607 00:25 107 0 active 196608
+# 11 10 "炎" STEAM_1:0:55493067 00:25 64 0 active 400000
+# 12 11 "Zoriss" STEAM_1:1:189554004 00:25 109 0 active 786432
+# 13 12 "✪ Kazant1p Apple Music ✔" STEAM_1:0:164581559 00:24 71 56 spawning 786432
+# 14 13 "КАМPИ 3.5" STEAM_1:1:150866274 00:24 76 56 spawning 786432
+#end
