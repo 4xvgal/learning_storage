@@ -6,14 +6,17 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"strconv"
 	"strings"
 
 	"github.com/MrWaggel/gosteamconv"
+	"github.com/davecgh/go-spew/spew"
 )
 
 // ErrRange indicates that a value is out of range for the target type.
 var ErrRange = errors.New("value out of range")
+
+//NotFound indicates that there is no search result
+var NotFound = errors.New("SteamID Not Found")
 
 //struct for dataset
 // userid name uniqueid connected ping loss state rate
@@ -21,7 +24,7 @@ type Data struct {
 	userid    int
 	name      string
 	uniqueid  string
-	steamID   int
+	steamID   int64
 	connected string
 	ping      int
 	loss      int
@@ -47,15 +50,17 @@ func main() {
 	checkErr(err)
 
 	output_data = StringsToStruct(txt_lines, startLine, endLine)
+	AddSteamIDIntoStruct(output_data, startLine, endLine)
+	spew.Dump(output_data)
 
-	fmt.Println(output_data)
+	tmp, _ := ExtractSteamID("# 12 11 \"Zoriss\" STEAM_1:1:189554004 00:25 109 0 active 786432")
+	fmt.Println(tmp)
 }
 
-//func stringToInt
-func stringToInt(steamid string) int64 {
+//func steamstringToInt
+func steamstringToInt(steamid string) (int64, error) {
 	steam64, err := gosteamconv.SteamStringToInt64(steamid)
-	checkErr(err)
-	return steam64
+	return steam64, err
 }
 
 //checkErr is checking err from error
@@ -97,20 +102,6 @@ func ReturnRankString(rankInt int) (string, error) {
 	//return returnRankString, err
 }
 
-//ExtractSteamID extract steamID from one string line
-func ExtractSteamID(source string) (string, error) {
-	var steamID string
-	var steamIDlocation int
-	var notfound = errors.New("SteamID Not Found")
-	if strings.Contains(source, "STEAM") != true {
-		return "", notfound
-	} else {
-		steamIDlocation = strings.Index(source, "STEAM")
-		steamID = source[steamIDlocation:18]
-	}
-	return steamID, nil
-}
-
 //유저정보가 시작되는 곳의 줄 번호를 리턴
 func SearchingStartLine(source []string) (int, error) {
 	var i int = 0
@@ -148,29 +139,70 @@ func StringToLines(s string) (lines []string, err error) {
 
 // StringsToStruct save data into struct line by line
 func StringsToStruct(source []string, startLine int, endLine int) (processedString []Data) {
-
 	var num_line = endLine - startLine - 1 //필요한 줄의 총갯수
 	var arr = 0
 	//var lines []string
 	processedString = make([]Data, num_line)
-	fmt.Println(len(processedString))
-	fmt.Println("make([]Data, num_line) completed")
-
 	for i := startLine + 1; i <= endLine-1; i++ {
-		lines := strings.Fields(source[i])
-		fmt.Println(len(lines))
-		processedString[arr].userid = arr + 1
-		processedString[arr].name = lines[3]
-		processedString[arr].uniqueid = lines[4]
-		//tmp, _ := strconv.Atoi(lines[4])
-		//processedString[arr].steamID, _ = gosteamconv.SteamInt64ToString(tmp)
-		processedString[arr].connected = lines[5]
-		processedString[arr].ping, _ = strconv.Atoi(lines[6])
-		processedString[arr].loss, _ = strconv.Atoi(lines[7])
-		processedString[arr].state = lines[8]
-		processedString[arr].rate, _ = strconv.Atoi(lines[9])
+		//lines := strings.Fields(source[i])
+
+		processedString[arr].name, _ = ExtractName(source[i])
+		processedString[arr].uniqueid, _ = ExtractSteamID(source[i])
+		processedString[arr].steamID, _ = gosteamconv.SteamStringToInt64(processedString[arr].uniqueid)
+		/*
+			processedString[arr].userid = arr + 1
+			processedString[arr].name = lines[3]
+			processedString[arr].uniqueid = lines[4]
+			processedString[arr].connected = lines[5]
+			processedString[arr].ping, _ = strconv.Atoi(lines[6])
+			processedString[arr].loss, _ = strconv.Atoi(lines[7])
+			processedString[arr].state = lines[8]
+			processedString[arr].rate, _ = strconv.Atoi(lines[9])
+		*/
 		arr++
 	}
 
 	return processedString
+}
+
+//ExtractSteamID extract steamID from one string line
+func ExtractSteamID(source string) (string, error) {
+	var steamID string
+	var steamIDStartlocation int
+	var steamIDEndlocation int
+	if strings.Contains(source, "STEAM") != true {
+		return "", NotFound
+	} else {
+		steamIDStartlocation = strings.Index(source, "STEAM_")
+		tmp := source[steamIDStartlocation:]
+		steamIDEndlocation = strings.IndexAny(tmp, " ")
+		steamID = tmp[:steamIDEndlocation]
+	}
+	return steamID, nil
+}
+func ExtractName(source string) (string, error) {
+	var name string
+	var nameStartLocation int
+	var nameEndLocation int
+	if strings.Contains(source, "\"") != true {
+		return "", NotFound
+	} else {
+		nameStartLocation = strings.Index(source, "\"")
+		tmp := source[nameStartLocation+1:]
+		nameEndLocation = strings.Index(tmp, "\"")
+		name = tmp[:nameEndLocation]
+	}
+	return name, nil
+}
+
+func AddSteamIDIntoStruct(source []Data, startLine int, endLine int) (destination []Data) {
+	var num_line = endLine - startLine - 1
+	destination = make([]Data, num_line)
+	for i := 0; i < num_line; i++ {
+		steam64, err := gosteamconv.SteamStringToInt64(source[i].uniqueid)
+		fmt.Println(steam64)
+		checkErr(err)
+		destination[i].steamID = steam64
+	}
+	return destination
 }
