@@ -6,9 +6,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/MrWaggel/gosteamconv"
+	"github.com/PuerkitoBio/goquery"
 	"github.com/davecgh/go-spew/spew"
 )
 
@@ -37,7 +40,8 @@ func main() {
 	var output_data []Data
 	var txt_lines []string
 	dir := "data\\sample.txt"
-
+	//goquery
+	//var baseURL string = "https://csgostats.gg/player/"
 	txt_byte, err := ioutil.ReadFile(dir)
 	checkErr(err)
 	txt_string := BytesToString(txt_byte)
@@ -55,6 +59,7 @@ func main() {
 
 	tmp, _ := ExtractSteamID("# 12 11 \"Zoriss\" STEAM_1:1:189554004 00:25 109 0 active 786432")
 	fmt.Println(tmp)
+	getPage("https://csgostats.gg/player/76561198082728488#/")
 }
 
 //func steamstringToInt
@@ -205,4 +210,42 @@ func AddSteamIDIntoStruct(source []Data, startLine int, endLine int) (destinatio
 		destination[i].steamID = steam64
 	}
 	return destination
+}
+
+//goquery section
+func getPage(baseURL string) {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", baseURL, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36")
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer resp.Body.Close()
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	checkErr(err)
+
+	//rankurl := doc.Find("div")
+	rankurl := doc.Find("div").Each(func(i int, s *goquery.Selection) {
+		fmt.Println(strconv.Itoa(i) + "번째" + s.Text())
+	})
+
+	fmt.Println(rankurl)
+
+}
+
+//check code from the http Response
+func checkCode(res *http.Response) {
+	if res.StatusCode != 200 {
+		log.Fatalf("Status code err: %d %s", res.StatusCode, res.Status)
+	}
+}
+
+//CleanString function
+func CleanString(str string) string {
+	return strings.Join(strings.Fields(strings.TrimSpace(str)), " ")
 }
