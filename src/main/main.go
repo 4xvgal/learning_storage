@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -13,15 +12,17 @@ import (
 	"github.com/MrWaggel/gosteamconv"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/nixz1337/csgorankviewer/src/errorhandling"
+	stringconv "github.com/nixz1337/csgorankviewer/src/stringconverter"
 )
 
 // ErrRange indicates that a value is out of range for the target type.
 var ErrRange = errors.New("value out of range")
 
-//NotFound indicates that there is no search result
+// NotFound indicates that there is no search result
 var NotFound = errors.New("SteamID Not Found")
 
-//struct for dataset
+// struct for dataset
 // userid name uniqueid connected ping loss state rate
 type Data struct {
 	userid    int
@@ -39,19 +40,19 @@ type Data struct {
 func main() {
 	var output_data []Data
 	var txt_lines []string
-	dir := "data\\sample.txt"
+	dir := "data/sample.txt"
 	//goquery
 	//var baseURL string = "https://csgostats.gg/player/"
 	txt_byte, err := ioutil.ReadFile(dir)
-	checkErr(err)
-	txt_string := BytesToString(txt_byte)
-	txt_lines, err = StringToLines(txt_string)
-	checkErr(err)
+	errorhandling.CheckErr(err)
+	txt_string := stringconv.BytesToString(txt_byte)
+	txt_lines, err = stringconv.StringToLines(txt_string)
+	errorhandling.CheckErr(err)
 
-	startLine, err := SearchingStartLine(txt_lines)
-	checkErr(err)
-	endLine, err := SearchingEndLine(txt_lines)
-	checkErr(err)
+	startLine, err := stringconv.SearchingStartLine(txt_lines)
+	errorhandling.CheckErr(err)
+	endLine, err := stringconv.SearchingEndLine(txt_lines)
+	errorhandling.CheckErr(err)
 
 	output_data = StringsToStruct(txt_lines, startLine, endLine)
 	AddSteamIDIntoStruct(output_data, startLine, endLine)
@@ -62,22 +63,15 @@ func main() {
 	getPage("https://csgostats.gg/player/76561198082728488#/")
 }
 
-//func steamstringToInt
+// func steamstringToInt
 func steamstringToInt(steamid string) (int64, error) {
 	steam64, err := gosteamconv.SteamStringToInt64(steamid)
 	return steam64, err
 }
 
-//checkErr is checking err from error
-func checkErr(err error) {
-	if err != nil {
-		log.Fatalln(err)
-	}
-}
-
-//ReturnRankString is return rank info to string
-//example rank := ReturnRankString(13)
-//function return "Master Guardian Elite"
+// ReturnRankString is return rank info to string
+// example rank := ReturnRankString(13)
+// function return "Master Guardian Elite"
 func ReturnRankString(rankInt int) (string, error) {
 	rankMap := map[int]string{
 		1:  "Silver 1",
@@ -107,41 +101,6 @@ func ReturnRankString(rankInt int) (string, error) {
 	//return returnRankString, err
 }
 
-//유저정보가 시작되는 곳의 줄 번호를 리턴
-func SearchingStartLine(source []string) (int, error) {
-	var i int = 0
-	for {
-		if strings.Contains(source[i], "#") == true {
-			return i, nil
-		} else {
-			i++
-		}
-	}
-}
-func SearchingEndLine(source []string) (int, error) {
-	var i int = 0
-	for {
-		if strings.Contains(source[i], "end") == true {
-			return i, nil
-		} else {
-			i++
-		}
-	}
-}
-
-func BytesToString(data []byte) string {
-	return string(data[:])
-}
-
-func StringToLines(s string) (lines []string, err error) {
-	scanner := bufio.NewScanner(strings.NewReader(s))
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	err = scanner.Err()
-	return lines, err
-}
-
 // StringsToStruct save data into struct line by line
 func StringsToStruct(source []string, startLine int, endLine int) (processedString []Data) {
 	var num_line = endLine - startLine - 1 //필요한 줄의 총갯수
@@ -156,7 +115,6 @@ func StringsToStruct(source []string, startLine int, endLine int) (processedStri
 		processedString[arr].steamID, _ = gosteamconv.SteamStringToInt64(processedString[arr].uniqueid)
 		/*
 			processedString[arr].userid = arr + 1
-			processedString[arr].name = lines[3]
 			processedString[arr].uniqueid = lines[4]
 			processedString[arr].connected = lines[5]
 			processedString[arr].ping, _ = strconv.Atoi(lines[6])
@@ -166,16 +124,15 @@ func StringsToStruct(source []string, startLine int, endLine int) (processedStri
 		*/
 		arr++
 	}
-
 	return processedString
 }
 
-//ExtractSteamID extract steamID from one string line
+// ExtractSteamID extract steamID from one string line
 func ExtractSteamID(source string) (string, error) {
 	var steamID string
 	var steamIDStartlocation int
 	var steamIDEndlocation int
-	if strings.Contains(source, "STEAM") != true {
+	if strings.Contains(source, "STEAM") {
 		return "", NotFound
 	} else {
 		steamIDStartlocation = strings.Index(source, "STEAM_")
@@ -189,7 +146,7 @@ func ExtractName(source string) (string, error) {
 	var name string
 	var nameStartLocation int
 	var nameEndLocation int
-	if strings.Contains(source, "\"") != true {
+	if !strings.Contains(source, "\"") {
 		return "", NotFound
 	} else {
 		nameStartLocation = strings.Index(source, "\"")
@@ -206,13 +163,13 @@ func AddSteamIDIntoStruct(source []Data, startLine int, endLine int) (destinatio
 	for i := 0; i < num_line; i++ {
 		steam64, err := gosteamconv.SteamStringToInt64(source[i].uniqueid)
 		fmt.Println(steam64)
-		checkErr(err)
+		errorhandling.CheckErr(err)
 		destination[i].steamID = steam64
 	}
 	return destination
 }
 
-//goquery section
+// goquery section
 func getPage(baseURL string) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", baseURL, nil)
@@ -227,7 +184,7 @@ func getPage(baseURL string) {
 
 	defer resp.Body.Close()
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
-	checkErr(err)
+	errorhandling.CheckErr(err)
 
 	//rankurl := doc.Find("div")
 	rankurl := doc.Find("div").Each(func(i int, s *goquery.Selection) {
@@ -238,14 +195,14 @@ func getPage(baseURL string) {
 
 }
 
-//check code from the http Response
+// check code from the http Response
 func checkCode(res *http.Response) {
 	if res.StatusCode != 200 {
 		log.Fatalf("Status code err: %d %s", res.StatusCode, res.Status)
 	}
 }
 
-//CleanString function
+// CleanString function
 func CleanString(str string) string {
 	return strings.Join(strings.Fields(strings.TrimSpace(str)), " ")
 }
