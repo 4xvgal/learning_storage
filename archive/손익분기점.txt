@@ -1,0 +1,19 @@
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	//A == 고정비용 b= 생산비용 c= 노트북의가격
+	var a, b, c int
+	profit := 0
+	fmt.Scanln(&a, &b, &c)
+	if b >= c {
+		fmt.Println(-1)
+	} else {
+		revenue := (b - c) * -1
+		profit = a/revenue + 1
+		fmt.Println(profit)
+	}
+}
