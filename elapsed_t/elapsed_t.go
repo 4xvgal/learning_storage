@@ -1,4 +1,4 @@
-package elapsedtime
+package elapsed_t
 
 import (
 	"fmt"
