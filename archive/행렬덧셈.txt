@@ -1,0 +1,47 @@
+package main
+
+import "fmt"
+
+func main() {
+	a_main()
+}
+
+func a_main() {
+	var n, m int
+	var array_a [100][100]int
+	var array_b [100][100]int
+	var array_c [100][100]int
+	fmt.Scanf("%d %d", &n, &m)
+	array_a = gen_array(n, m, array_a)
+	array_b = gen_array(n, m, array_b)
+	array_c = merge_array(n, m, array_a, array_b)
+	print_array(n, m, array_c)
+}
+
+func gen_array(n int, m int, a [100][100]int) [100][100]int {
+	for i := 0; i < n; i++ {
+		for j := 0; j < m; j++ {
+			fmt.Scanf("%d", &a[i][j])
+		}
+	}
+	return a
+}
+
+func merge_array(n int, m int, a [100][100]int, b [100][100]int) [100][100]int {
+	var array_n [100][100]int
+	for i := 0; i < n; i++ {
+		for j := 0; j < m; j++ {
+			array_n[i][j] = a[i][j] + b[i][j]
+		}
+	}
+	return array_n
+}
+
+func print_array(n int, m int, array [100][100]int) {
+	for i := 0; i < n; i++ {
+		for j := 0; j < m; j++ {
+			fmt.Printf("%d ", array[i][j])
+		}
+		fmt.Printf("\n")
+	}
+}

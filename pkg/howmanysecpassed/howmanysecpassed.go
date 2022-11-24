@@ -1,16 +1,16 @@
-package elapsed_t
+package howmanysecpassed
 
 import (
 	"fmt"
 	"time"
 )
 
-func ElapsedT_start() time.Time {
+func Start() time.Time {
 	startTime := time.Now()
 	return startTime
 }
 
-func ElapsedT_end(startTime time.Time) {
+func End(startTime time.Time) {
 	elapsedTime := time.Since(startTime)
 	fmt.Printf("ElapsedTime: %s\n", elapsedTime)
 }
