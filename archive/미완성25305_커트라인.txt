@@ -1,0 +1,65 @@
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	a_main()
+}
+func a_main() {
+	var Cnt int
+	var cutLineCnt int
+	var cutLineInt int
+	var Arr [1001]int
+
+	fmt.Scanf("%d", &Cnt)
+	fmt.Scanf("%d", &cutLineCnt)
+	for i := 0; i < Cnt; i++ {
+		fmt.Scanf("%d", &Arr[i])
+	}
+	Arr = SortInteger(Arr, Cnt)
+	cutLineInt = Arr[Cnt-cutLineCnt]
+	fmt.Printf("%d", cutLineInt)
+}
+
+/*func a_test() {
+	time := howmanysecpassed.Start()
+	var testCnt int = 50
+	var cutLineCnt int = 10
+	var cutLineInt int
+	var testArr = [1000]int{
+		50, 50, 50, 49, 49, 49, 49, 44, 44, 41,
+		40, 39, 38, 37, 36, 35, 34, 33, 32, 31,
+		30, 29, 28, 27, 26, 25, 24, 23, 22, 21,
+		20, 19, 18, 17, 16, 15, 14, 13, 12, 11,
+		10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+	}
+	testArr = SortInteger(testArr, testCnt)
+	cutLineInt = testArr[tetCnt-cutLineCnt]
+	fmt.Printf("%d\n", cutLineInt)
+	for i := 0; i < testCnt; i++ {
+		fmt.Printf("%d ", testArr[i])
+	}
+	howmanysecpassed.End(time)
+}*/
+
+func SortInteger(arr [1001]int, cnt int) [1001]int {
+	var p_min *int
+	var min = arr[0]
+	for i := 0; i < cnt; i++ {
+		min = 1000
+		for j := i; j < cnt; j++ { //최솟값을 찾는다.
+
+			if arr[j] <= min { //핵심줄?
+				min = arr[j]
+				p_min = &arr[j] //주소값을 저장
+			}
+		}
+		//min = b, arr[i]= a, tmp = c
+		tmp := arr[i]   // set c
+		arr[i] = *p_min //a= b
+		*p_min = tmp    //b=c, p_min의 포인터에 tmp 역참조하기
+	}
+	return arr
+}

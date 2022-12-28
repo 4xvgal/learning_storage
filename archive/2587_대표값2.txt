@@ -1,0 +1,57 @@
+package main
+
+import "fmt"
+
+func main() {
+	a_main()
+}
+
+/*
+	func a_test() {
+		var testArr = [5]int{
+			10, 40, 30, 60, 30,
+		}
+
+		testArr = SortInteger(testArr, 5)
+		var avg = AvgInteger(testArr)
+		fmt.Printf("%d\n%d", avg, testArr[2])
+
+}
+*/
+func a_main() {
+	var Arr [5]int
+	for i := 0; i < 5; i++ {
+		fmt.Scanf("%d", &Arr[i])
+	}
+	Arr = SortInteger(Arr, 5)
+	var Avg = AvgInteger(Arr)
+	fmt.Printf("%d\n%d", Avg, Arr[2])
+}
+
+func SortInteger(arr [5]int, cnt int) [5]int {
+	var p_min *int
+	var min = arr[0]
+	for i := 0; i < cnt; i++ {
+		min = 1000
+		for j := i; j < cnt; j++ { //최솟값을 찾는다.
+
+			if arr[j] <= min { //핵심줄?
+				min = arr[j]
+				p_min = &arr[j] //주소값을 저장
+			}
+		}
+		//min = b, arr[i]= a, tmp = c
+		tmp := arr[i]   // set c
+		arr[i] = *p_min //a= b
+		*p_min = tmp    //b=c, p_min의 포인터에 tmp 역참조하기
+	}
+	return arr
+}
+
+func AvgInteger(arr [5]int) int {
+	var sum int = 0
+	for i := 0; i < 5; i++ {
+		sum += arr[i]
+	}
+	return sum / 5
+}
