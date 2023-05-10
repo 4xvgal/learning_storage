@@ -16,7 +16,7 @@ class NamedCircle : public Circle{
 private:
 	string name;
 public:
-	NamedCircle(int radius = 1, string name = "Circle") : Circle(radius){
+	NamedCircle(int radius = 1, string name = "Circle") : Circle(radius){ //Circle 클래스를 상속하여 생성자 생성
 		this -> name = name;
 	}
 	string getName(){ return name;}
@@ -27,7 +27,7 @@ public:
 		cout << "반지름이 "<< getRadius()<< "인 "<< getName();
 	}
 };
-string getBiggest(NamedCircle c[], int size){
+string getBiggest(NamedCircle c[], int size){ // NamedCircle 객체를 받아 가장 반지름이 큰 객체의 name 멤버변수를 반환
 	int max = -999999;
 	string maxName;
 	for(int i=0;i<size;i++){
