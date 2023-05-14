@@ -1,4 +1,5 @@
 //ch8-2.cpp
+//Circle을 상속받는 NamedCircle를 이용하여 가장 면적이 큰 피자를 구하는 프로그램
 #include<iostream>
 
 using namespace std;
@@ -39,9 +40,9 @@ string getBiggest(NamedCircle c[], int size){ // NamedCircle 객체를 받아 �
 	return maxName;
 }
 int main(){
-	int tmp_i;
+	int tmp_i; //입력을 위한 임시 변수 생성
 	string tmp_s;
-	NamedCircle pizza[5];
+	NamedCircle pizza[5]; //Circle를 상속받는 NamedCircle 배열 생성
 	cout << "5개의 정수 반지름과 원의 이름을 입력하세요"<<endl;
 	for(int i =0;i<5;i++){
 		cout << i+1 << ">> ";
