@@ -1,56 +1,34 @@
-//ch8-2.cpp
+//ch9-1.cpp
+//실습문제1
 #include<iostream>
-
 using namespace std;
-
-class Circle{
-private:
-	int radius;
+class Converter {
+protected:
+	double ratio;
+	virtual double convert(double src) = 0; //src 를 다른 단위로 변환한다.
+	virtual string getSourceString() = 0; //src 단위 명칭
+	virtual string getDestString() =0; // dest 단위 명칭
 public:
-	Circle(int radius = 0) {this -> radius = radius;}
-	int getRadius() { return radius;}
-	void setRadius(int radius) { this-> radius = radius;}
-	double getArea() {return 3.14*radius*radius;}
-};
-class NamedCircle : public Circle{
-private:
-	string name;
-public:
-	NamedCircle(int radius = 1, string name = "Circle") : Circle(radius){
-		this -> name = name;
-	}
-	string getName(){ return name;}
-	void setName(string name){
-		this -> name = name;
-	}
-	void show(){
-		cout << "반지름이 "<< getRadius()<< "인 "<< getName();
+	Converter(double ratio) { this -> ratio = ratio;}
+	void run(){
+		double src;
+		cout << getSourceString() << "을 " << getDestString() <<"로 바꿉니다";
+		cout << getSourceString() << "을 입력하세요 >>" ;
+		cin >> src;
+		cout << "변환 결과 : " << convert(src) << getDestString() << endl;
 	}
 };
-string getBiggest(NamedCircle c[], int size){
-	int max = -999999;
-	string maxName;
-	for(int i=0;i<size;i++){
-		if (c[i].getRadius() >= max){
-			max= c[i].getRadius();
-			maxName= c[i].getName();
-		}
-	}
-	return maxName;
-}
-int main(){
-	int tmp_i;
-	string tmp_s;
-	NamedCircle pizza[5];
-	cout << "5개의 정수 반지름과 원의 이름을 입력하세요"<<endl;
-	for(int i =0;i<5;i++){
-		cout << i+1 << ">> ";
-		cin >> tmp_i >> tmp_s;
-		pizza[i].setRadius(tmp_i);
-		pizza[i].setName(tmp_s);
-	}
-	string biggest = getBiggest(pizza,5);
-	cout << "가장 면적이 큰 피자는 "<< biggest<<"입니다.";
-}
+class WonToDollar : public Converter { //추상클래스 구현
 
+protected:
+	virtual string getSource
+public:
+	WonToDollar(double n) : Converter(n){
+		;
+	}
+};
 
+int main() {
+	WonToDollar wd(1010); //1 달러에 1010원
+	wd.run();
+}
