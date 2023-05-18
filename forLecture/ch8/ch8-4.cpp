@@ -1,57 +1,52 @@
 //ch8-4.cpp
+//Point 클래스를 상속받는 ColorPoint 클래스 작성 및 응용
 #include <iostream>
 using namespace std;
 
-// Point class declaration
+// 포인트 클래스 선언부
 class Point
 {
 	int x, y;
 
 public:
-	// Point class constructor
+	// 생성자 선언
 	Point(int x, int y)
 	{
 		this->x = x;
 		this->y = y;
 	}
-	// Getter methods for x and y coordinates
+	//x,y 를 리턴하는 함수
 	int getX() { return x; }
 	int getY() { return y; }
 
 protected:
-	// Method to move the point to a new location
-	void move(int x, int y)
-	{
+	//좌표계를 새로 설정하는 함수 move
+	void move(int x, int y){
 		this->x = x;
 		this->y = y;
 	}
 };
 
-// ColorPoint class declaration, derived from Point class
-class ColorPoint : public Point
-{
+// Point를 상속받은 ColorPoint 클래스 선언
+class ColorPoint : public Point{
 private:
 	string ColorName;
 
 public:
-	// ColorPoint class constructor
-	ColorPoint(int x = 0, int y = 0, string name = "BLACK") : Point(x, y)
-	{
+	//ColorPoint 생성자 선언
+	ColorPoint(int x = 0, int y = 0, string name = "BLACK") : Point(x, y){
 		ColorName = name;
 	}
-	// Method to set the location of the point
-	void setPoint(int x, int y)
-	{
+	
+	void setPoint(int x, int y){ // 새로운 좌표계를 설정하는 메소드
 		move(x, y);
 	}
-	// Method to set the color of the point
-	void setColor(string name)
-	{
+	
+	void setColor(string name) { // 컬러를 설정하는 메소드
 		ColorName = name;
 	}
-	// Method to display the color and location of the point
-	void show()
-	{
+	
+	void show(){// 색과 좌표계 출력
 		cout << ColorName << "색으로 (" << getX() << ',' << getY() << ")에 위치한 점입니다." << endl;
 	}
 };
@@ -59,17 +54,11 @@ public:
 // Main function
 int main()
 {
-	// Create a ColorPoint object with default values
 	ColorPoint zeroPoint;
-	// Display the color and location of the point
 	zeroPoint.show();
-	// Create a ColorPoint object with specified values
 	ColorPoint cp(5, 5);
-	// Set the location of the point to a new location
 	cp.setPoint(10, 20);
-	// Set the color of the point to blue
 	cp.setColor("BLUE");
-	// Display the color and location of the point
 	cp.show();
 }
 

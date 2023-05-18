@@ -1,5 +1,6 @@
-//ch9-2.cpp
-//실습문제2 킬로미터를 마일로 전환하기
+//ch9-2.cpp 실습문제 2
+//추상 클래스 Converter을 상속받아 킬로미터를 마일로 변환하는 클래스 작성
+
 #include<iostream>
 using namespace std;
 
@@ -23,12 +24,12 @@ public:
 class KmToMile : public Converter {
 protected:
 	virtual double convert(double src){
-		return src / 1.609344;
+		return src / 1.609344; //km 를 1.609344 로 나누면 마일이 된다.
 	}
-	virtual string getSourceString() {return "Km";}
-	virtual string getDestString() {return "Mile";}
+	virtual string getSourceString() {return "Km";} //오버라이딩으로 getSourceString 함수 작성
+	virtual string getDestString() {return "Mile";} //오버라이딩으로 getDestString 함수 작성
 public:
-	KmToMile(double km) : Converter(km) { }
+	KmToMile(double km) : Converter(km) { }//생성자 선언
 };
 int main() {
 	KmToMile toMile(1.609344);

@@ -1,5 +1,6 @@
-//ch9-2.cpp
-//실습문제2 킬로미터를 마일로 전환하기
+//ch9-1.cpp
+//실습문제1
+//추상 클래스 Converter을 상속받아 달러를 원화로 환산하는 클래스 작성
 #include<iostream>
 using namespace std;
 
@@ -19,18 +20,20 @@ public:
 		cout << "변환 결과 : " << convert(src) << getDestString() << endl;
 	}
 };
-
-class KmToMile : public Converter {
+class WonToDollar : public Converter { //추상클래스 구현
 protected:
-	virtual double convert(double src){
-		return src / 1.609344;
-	}
-	virtual string getSourceString() {return "Km";}
-	virtual string getDestString() {return "Mile";}
+	virtual double convert(double src);
+	virtual string getSourceString() { return "원"; }
+	virtual string getDestString() { return "달러"; }
 public:
-	KmToMile(double km) : Converter(km) { }
+	WonToDollar(double ratio) : Converter(ratio) { }
 };
+
+double WonToDollar::convert(double src) {
+	return src / ratio;
+}
+
 int main() {
-	KmToMile toMile(1.609344);
-	toMile.run();
+	WonToDollar wd(1010); //1 달러에 1010원
+	wd.run();
 }
