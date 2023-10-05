@@ -1,0 +1,45 @@
+package main
+
+import "fmt"
+
+func main() {
+	var n int
+	fmt.Scanln(&n)
+	var a, b int = whereisthefraction(n)
+	fmt.Printf("%d/%d", a, b)
+}
+
+func isnumberodd(n int) bool {
+	if n%2 == 1 {
+		return true
+	}
+	return false
+}
+func whereistheline(n int) int {
+	var cnt_line int = 1
+	var cnt int = 0
+	var sum_prevline = 0
+	for {
+
+		if sum_prevline >= n {
+			break
+		}
+		sum_prevline += cnt_line
+		cnt_line += 1
+		cnt += 1
+	}
+	return cnt
+}
+
+func whereisthefraction(x int) (int, int) {
+	var line = whereistheline(x)
+	var denominator, numerator int
+	if isnumberodd(line) == true {
+		denominator = x - (line-1)*line/2
+		numerator = (line + 1) - denominator
+	} else {
+		numerator = x - (line-1)*line/2
+		denominator = (line + 1) - numerator
+	}
+	return numerator, denominator
+}

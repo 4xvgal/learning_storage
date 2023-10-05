@@ -1,0 +1,65 @@
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"sort"
+)
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+	writer := bufio.NewWriter(os.Stdout)
+	defer writer.Flush()
+	var n int
+	var arr []int
+	var tmp int
+	var i int
+	fmt.Fscanln(reader, &n)
+	for i = 0; i < n; i++ {
+		fmt.Fscanf(reader, "%d\n", &tmp)
+		arr = append(arr, tmp)
+	}
+	sort.Ints(arr)
+	for i = 0; i < n; i++ {
+		fmt.Fprintln(writer, arr[i])
+	}
+
+}
+
+/*
+func test_main() {
+	var arr []int
+
+	var n int = 1000000
+	for i := n; i > 0; i-- { //테스트를 위해 1000000 크기의 배열 생성
+		arr = append(arr, i)
+	}
+
+	timeTest1 := test_1(arr, n) //출력문이 없는 함수
+	timeTest4 := test_4(arr, n) //Fprintln 사용
+	fmt.Println("test1 :", timeTest1)
+	fmt.Println("test4(printf) :", timeTest4)
+}
+func test_1(arr []int, n int) time.Duration {
+	time := howmanysecpassed.Start()
+
+	sort.Ints(arr)
+	//fmt.Println(arr)
+	end := howmanysecpassed.End(time)
+	return end
+}
+
+func test_4(arr []int, n int) time.Duration {
+	time := howmanysecpassed.Start()
+	writer := bufio.NewWriter(os.Stdout)
+	defer writer.Flush()
+	sort.Ints(arr)
+
+	for i := 0; i < n; i++ {
+		fmt.Fprintln(writer, arr[i])
+	}
+	end := howmanysecpassed.End(time)
+	return end
+}
+*/

@@ -1,0 +1,86 @@
+package main
+
+import (
+	"fmt"
+	"pkg/howmanysecpassed"
+)
+
+func main() {
+	//a_main()
+	a_test()
+}
+func a_main() {
+	var t int
+	var n int
+	fmt.Scanln(&t)
+	for i := 0; i < t; i++ {
+		fmt.Scanf("%d", &n)
+		fmt.Println(isitgoldbach(n))
+	}
+}
+
+func a_test() {
+	time := howmanysecpassed.Start()
+	var t int = 10000
+	//cases := []int{4, 10, 16}
+	for i := 0; i < t; i++ {
+		fmt.Println(isitgoldbach(10000))
+	}
+	howmanysecpassed.End(time)
+}
+
+func isprimenumber(n int) bool { // 입력 n이 소수라면 ture, 아니라면 false 리턴
+	if n == 1 {
+		return false
+	} else if n%2 == 0 {
+		if n == 2 {
+			return true
+		} else {
+			return false
+		}
+	}
+	for i := 3; i*i <= n; i += 2 {
+		if n%i == 0 {
+			return false
+		}
+	}
+	return true
+
+}
+
+//배열에 n의 모든 소수를 저장한 다음 배열의 처음과 끝에서부터 합해 0이 되는지 비교
+
+func isitgoldbach(n int) (int, int) {
+	array := genArrayPrime(n)
+	size := len(array)
+
+	diff := 9999
+	a, b := 0, 0
+
+	for i := 0; i < size; i++ { //j는 자기보다 i보다 큰수만 대입하면된다.
+		for j := i; j < size; j++ {
+			if array[i]+array[j] == n {
+				tmp := array[i] - array[j]
+				if tmp < 0 { //두 수의 차를 절대값으로 변환
+					tmp = tmp * -1
+				}
+				if tmp < diff {
+					diff = tmp
+					a = array[i]
+					b = array[j]
+				}
+			}
+		}
+	}
+	return a, b //골드바흐 파티션 중 차가 제일 적을 것을 반환
+}
+
+func genArrayPrime(n int) []int { //입력된 n보다 작은 소수들의 배열을 반환
+	var a []int
+	for i := 1; i <= n; i++ {
+		if isprimenumber(i) {
+			a = append(a, i)
+		}
+	}
+	return a
+}

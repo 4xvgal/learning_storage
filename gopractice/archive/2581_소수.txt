@@ -1,0 +1,50 @@
+package main
+
+import "fmt"
+
+func main() {
+	a_main()
+}
+func a_main() {
+	var m, n int
+	var sum int = 0
+	var min int = 10000
+	var cnt int = 0
+	fmt.Scanln(&m)
+	fmt.Scanln(&n)
+
+	for i := m; i <= n; i++ {
+		if isprimenumber(i) {
+			sum += i
+			cnt++
+			if i < min {
+				min = i
+			}
+		}
+	}
+	if cnt == 0 {
+		fmt.Println(-1)
+	} else {
+		fmt.Printf("%d\n%d", sum, min)
+	}
+
+}
+
+func isprimenumber(n int) bool {
+	if n == 1 {
+		return false
+	} else if n%2 == 0 {
+		if n == 2 {
+			return true
+		} else {
+			return false
+		}
+	}
+	for i := 3; i*i <= n; i += 2 {
+		if n%i == 0 {
+			return false
+		}
+	}
+	return true
+
+}

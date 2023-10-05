@@ -1,0 +1,23 @@
+package main
+
+import "fmt"
+
+func main() {
+	var n int
+	fmt.Scanln(&n)
+	fmt.Println(hexagon(n))
+}
+
+func hexagon(n int) int {
+	var hxg_cnt int = 1
+	var circle_cnt int = 1
+	for {
+		if hxg_cnt >= n {
+			break
+		}
+		hxg_cnt += 6 * circle_cnt
+		circle_cnt += 1
+	}
+	return circle_cnt
+}
+

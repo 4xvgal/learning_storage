@@ -1,0 +1,46 @@
+package main
+
+import (
+	"fmt"
+	"sort"
+)
+
+func main() {
+
+	//var testArr = []int{
+	//100, 76, 85, 93, 98,
+	//}
+	//var testCutline = 2
+	a_main()
+	//test_4(testArr, testCutline) //using internal reverse (이게 답이다)
+
+}
+
+func a_main() {
+	var Cnt int
+	var cutLineCnt int
+	var cutLineInt int
+	var Arr []int
+
+	fmt.Scanf("%d", &Cnt)
+	fmt.Scanf("%d", &cutLineCnt)
+	for i := 0; i < Cnt; i++ {
+		var tmp int
+		fmt.Scanf("%d", &tmp)
+		Arr = append(Arr, tmp)
+	}
+	sort.Sort(sort.Reverse(sort.IntSlice(Arr)))
+	cutLineInt = Arr[cutLineCnt-1]
+	fmt.Printf("%d", cutLineInt)
+}
+
+func test_4(testArr []int, cutLineCnt int) {
+	fmt.Printf("test 4...\n")
+	time := howmanysecpassed.Start()
+	var cutLineInt int
+	sort.Sort(sort.Reverse(sort.IntSlice(testArr)))
+	cutLineInt = testArr[cutLineCnt-1]
+	fmt.Printf("%d\n", cutLineInt)
+
+	howmanysecpassed.End(time)
+} */

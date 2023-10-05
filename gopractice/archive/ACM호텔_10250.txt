@@ -1,0 +1,45 @@
+package main
+
+import "fmt"
+
+func main() {
+	var t int
+	fmt.Scanln(&t)
+
+	var hotel [100][100]int
+	var rsv_room [100]int
+	for i := 0; i < t; i++ {
+		var h, w int
+		var n int
+		fmt.Scanln(&h, &w, &n)
+
+		room := 100
+		for j := 0; j < h; j++ {
+			for k := 0; k < w; k++ {
+				room = room + 1
+				hotel[j][k] = room
+			}
+			room -= w
+			room += 100
+		}
+		//손님 방 찾기
+		var rsv_count int = 0
+		var brk_count bool
+		for j := 0; j < w; j++ {
+			for k := 0; k < h; k++ {
+				rsv_count++
+				rsv_room[i] = hotel[k][j]
+				if rsv_count == n {
+					brk_count = true
+					break
+				}
+			}
+			if brk_count == true {
+				break
+			}
+		}
+	}
+	for i := 0; i < t; i++ {
+		fmt.Println(rsv_room[i])
+	}
+}

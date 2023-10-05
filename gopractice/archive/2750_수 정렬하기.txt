@@ -1,0 +1,60 @@
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	a_main()
+}
+
+/*func a_test() {
+	time := howmanysecpassed.Start()
+	var testArr [1000]int
+	testCaseCnt := 1000
+	j := 0
+	for i := testCaseCnt; i > 0; i-- {
+		testArr[j] = i
+		j++
+	}
+	testArr = sort(testArr, testCaseCnt)
+	for i := 0; i < testCaseCnt; i++ {
+		fmt.Printf("%d\n", testArr[i])
+	}
+	howmanysecpassed.End(time)
+}*/
+
+func a_main() {
+	var caseCnt int
+	var arr = [1000]int{}
+	fmt.Scanf("%d", &caseCnt)
+	for i := 0; i < caseCnt; i++ {
+		var tmp int
+		fmt.Scanf("%d", &tmp)
+		arr[i] = tmp
+	}
+	arr = sort(arr, caseCnt)
+	for i := 0; i < caseCnt; i++ {
+		fmt.Printf("%d\n", arr[i])
+	}
+}
+
+func sort(arr [1000]int, n int) [1000]int {
+	var p_min *int
+	var min = arr[0]
+	for i := 0; i < n; i++ {
+		min = 1000
+		for j := i; j < n; j++ { //최솟값을 찾는다.
+
+			if arr[j] <= min { //핵심줄?
+				min = arr[j]
+				p_min = &arr[j] //주소값을 저장
+			}
+		}
+		//min = b, arr[i]= a, tmp = c
+		tmp := arr[i]   // set c
+		arr[i] = *p_min //a= b
+		*p_min = tmp    //b=c, p_min의 포인터에 tmp 역참조하기
+	}
+	return arr
+}

@@ -1,0 +1,43 @@
+
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	a_main()
+}
+func a_main() {
+	var t int
+	var n int
+	var cnt int = 0
+	fmt.Scanln(&t)
+	for i := 1; i <= t; i++ {
+		fmt.Scanf("%d", &n)
+		if isprimenumber(n) {
+			cnt++
+		}
+	}
+	fmt.Println(cnt)
+
+}
+
+func isprimenumber(n int) bool {
+	if n == 1 {
+		return false
+	} else if n%2 == 0 {
+		if n == 2 {
+			return true
+		} else {
+			return false
+		}
+	}
+	for i := 3; i*i <= n; i += 2 {
+		if n%i == 0 {
+			return false
+		}
+	}
+	return true
+
+}

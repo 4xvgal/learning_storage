@@ -1,0 +1,29 @@
+package main
+
+import "fmt"
+
+func main() {
+	var n int
+	fmt.Scanln(&n)
+	fmt.Println(sugarpack(n))
+}
+
+func sugarpack(n int) int {
+	var cnt int = 0
+	for {
+		if n%5 == 0 {
+			cnt += n / 5
+			return cnt
+		}
+		n -= 3
+		cnt++
+		if n <= 0 {
+			break
+		}
+	}
+	if n < 0 {
+		return -1
+	} else {
+		return cnt
+	}
+}

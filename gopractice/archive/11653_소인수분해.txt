@@ -1,0 +1,58 @@
+package main
+
+import (
+	"fmt"
+	//"pkg/elapsed_t"
+)
+
+func main() {
+	a_main()
+	//var tcase int = 43092129720270
+	//a_test(tcase)
+}
+func a_main() {
+	var n int
+	var tmp int
+	fmt.Scanln(&n)
+	for i := n; ; {
+		if i == 1 {
+			break
+		}
+		tmp = finding_factor_min(i)
+		fmt.Println(tmp)
+		i = i / tmp
+		if i == 1 {
+			break
+		}
+	}
+}
+
+/*
+	func a_test(n int) {
+		fmt.Println("Algo_A")
+		var tmp int
+		time := elapsed_t.ElapsedT_start()
+
+		for i := n; ; {
+			if i == 1 {
+				break
+			}
+			tmp = finding_factor_min(i)
+			fmt.Println(tmp)
+			i = i / tmp
+		}
+		elapsed_t.ElapsedT_end(time)
+	}
+*/
+func finding_factor_min(n int) int {
+	var i int = 2
+	if n == 1 {
+		return 1
+	}
+	for i = 2; ; i++ {
+		if n%i == 0 {
+			break
+		}
+	}
+	return i
+}

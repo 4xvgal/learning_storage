@@ -1,0 +1,22 @@
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+
+	var a, b, v int
+	fmt.Scanln(&a, &b, &v)
+
+	day_sum := (v - b) / (a - b) //걸리는 일수
+
+	day_x := (v - b) % (a - b) // 나머지가 있는경우를 위한 계산
+	if day_x == 0 {
+	} else { //만약 나머지가 남을경우 하루가 더 걸리기 때문에 일수 +1
+		day_sum++
+	}
+
+	fmt.Println(day_sum)
+
+}
